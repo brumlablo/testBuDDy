@@ -1,0 +1,2953 @@
+swagger: "2.0"
+info:
+  description: "TestBuDDy is a test management, requirement management, automation friendly tool."
+  version: "1.0.0"
+  title: "TestBuDDy"
+  contact:
+    email: "barbora.blozonova@gmail.com"
+  license:
+    name: "MIT licence"
+host: "127.0.0.1:5000"
+basePath: "/"
+tags:
+
+- name: "Swagger doc"
+  description: "Show this Swagger page."
+
+- name: "Demo Initialization"
+  description: "Data Initialization for testing purposes."
+
+- name: "User and role management"
+  description: "Operations regarding to user."
+
+- name: "Project management"
+  description: "Operations regarding project."
+
+- name: "Test library - plans and modules"
+  description: "Operations regarding desgin of test plans and test modules."
+
+- name: "Test library - cases and steps"
+  description: "Operations regarding design of test cases, test steps and test step definitions."
+
+- name: "Test execution - test run management and reporting"
+  description: "Operations regarding execution of test runs (CI runs) and repository management."
+
+- name: "Requirement management"
+  description: "Operations regarding requirements, tags."
+
+- name: "Incident management"
+  description: "Operations regarding bugs (objects)."
+
+schemes:
+- "http"
+paths:
+  /:
+    get:
+      tags:
+      - "Swagger doc"
+      summary: "Show Swagger doc"
+      description: ""
+      produces:
+      - "text/html"
+      responses:
+        200:
+          description: "Shows Swagger page."
+  /users:
+    get:
+      tags:
+      - "User and role management"
+      summary: "List all users"
+      description: ""
+      produces:
+      - "application/json"
+      - "text/html"
+      responses:
+        404:
+          description: "Users not found."
+        200:
+          schema:
+            type: "object"
+            properties:
+              message:
+                type: "string"
+              object:
+                type: "array"
+                items:
+                  $ref: "#/definitions/User"
+          description: "Operation successful. Returns users in JSON response."
+    post:
+      tags:
+      - "User and role management"
+      summary: "Create user"
+      description: ""
+      produces:
+      - "application/json"
+      - "text/html"
+      parameters:
+      - name: "user info"
+        in: "body"
+        description: "User's information"
+        required: true
+        schema:
+          type: "object"
+          properties:
+            username:
+              type: "string"
+            password:
+              type: "string"
+            name:
+              type: "string"
+            surname:
+              type: "string"
+      responses:
+        200:
+          description: "Operation successful. Returns user in JSON response."
+          schema:
+            type: "object"
+            properties:
+              message:
+                type: "string"
+              object:
+                $ref: "#/definitions/User"
+        400:
+          description: "Invalid body."
+        415:
+          description: "Unsupported media type."
+        500:
+          description: "Operation failed."
+  /users/{user_id}:
+    get:
+      tags:
+      - "User and role management"
+      summary: "Get user (by set path ID)"
+      description: ""
+      produces:
+      - "application/json"
+      - "text/html"
+      parameters:
+      - name: "user_id"
+        in: "path"
+        type: "integer"
+        required: true
+      responses:
+        404:
+          description: "User not found."
+        200:
+          schema:
+            type: "object"
+            properties:
+              message:
+                type: "string"
+              object:
+                $ref: "#/definitions/User"
+          description: "Operation successful. Returns user in JSON response."
+    put:
+      tags:
+      - "User and role management"
+      summary: "Update user info"
+      description: ""
+      produces:
+      - "application/json"
+      - "text/html"
+      parameters:
+      - name: "user_id"
+        in: "path"
+        type: "integer"
+        required: true
+      - name: "user info"
+        in: "body"
+        description: "User's information"
+        required: true
+        schema:
+          type: "object"
+          properties:
+            username:
+              type: "string"
+            password:
+              type: "string"
+            name:
+              type: "string"
+            surname:
+              type: "string"
+      responses:
+        200:
+          description: "Operation successful. Returns updated user in JSON response."
+          schema:
+            type: "object"
+            properties:
+              message:
+                type: "string"
+              object:
+                $ref: "#/definitions/User"
+        400:
+          description: "Invalid body."
+        404:
+          description: "User not found."
+        415:
+          description: "Unsupported media type."
+        500:
+          description: "Operation failed."
+    delete:
+      tags:
+      - "User and role management"
+      summary: "Delete user"
+      description: ""
+      produces:
+      - "text/html"
+      parameters:
+      - name: "user_id"
+        in: "path"
+        type: "string"
+        required: true
+      responses:
+        200:
+          description: "Operation successful."
+        404:
+          description: "User not found."
+        500:
+          description: "Operation failed."
+  /users/{user_id}/assign-project:
+    post:
+      tags:
+      - "User and role management"
+      summary: "Assign project to user"
+      description: ""
+      produces:
+      - "text/html"
+      parameters:
+      - name: "user_id"
+        in: "path"
+        type: "integer"
+        required: true
+      - name: "project info"
+        in: "body"
+        description: "Project ID in JSON"
+        required: true
+        schema:
+          type: "object"
+          properties:
+            project_id:
+              type: "integer"
+      responses:
+        200:
+          description: "Operation successful."
+        400:
+          description: "Invalid body."
+        404:
+          description: "User or project not found."
+        415:
+          description: "Unsupported media type."
+        500:
+          description: "Operation failed."
+    delete:
+      tags:
+      - "User and role management"
+      summary: "Remove assigned project from user"
+      description: ""
+      produces:
+      - "text/html"
+      parameters:
+      - name: "user_id"
+        in: "path"
+        type: "integer"
+        required: true
+      - name: "project info"
+        in: "body"
+        description: "Project ID in JSON"
+        required: true
+        schema:
+          type: "object"
+          properties:
+            project_id:
+              type: "integer"
+      responses:
+        200:
+          description: "Operation successful."
+        400:
+          description: "Invalid body."
+        404:
+          description: "User or project not found."
+        415:
+          description: "Unsupported media type."
+        500:
+          description: "Operation failed."
+  /users/{user_id}/assign-role:
+    post:
+      tags:
+      - "User and role management"
+      summary: "Assign role to user"
+      description: ""
+      produces:
+      - "text/html"
+      parameters:
+      - name: "user_id"
+        in: "path"
+        type: "integer"
+        required: true
+      - name: "role info"
+        in: "body"
+        description: "Role ID in JSON"
+        required: true
+        schema:
+          type: "object"
+          properties:
+            role_id:
+              type: "integer"
+      responses:
+        200:
+          description: "Operation successful."
+        400:
+          description: "Invalid body."
+        404:
+          description: "User or role not found."
+        415:
+          description: "Unsupported media type."
+        500:
+          description: "Operation failed."
+    delete:
+      tags:
+      - "User and role management"
+      summary: "Remove assigned role from user."
+      description: ""
+      produces:
+      - "text/html"
+      parameters:
+      - name: "user_id"
+        in: "path"
+        type: "integer"
+        required: true
+      - name: "role info"
+        in: "body"
+        description: "Role ID in JSON"
+        required: true
+        schema:
+          type: "object"
+          properties:
+            role_id:
+              type: "integer"
+      responses:
+        200:
+          description: "Operation successful."
+        400:
+          description: "Invalid body."
+        404:
+          description: "User or role not found."
+        415:
+          description: "Unsupported media type."
+        500:
+          description: "Operation failed."
+  /users/{user_id}/assign-testcase:
+    post:
+      tags:
+      - "User and role management"
+      summary: "Assign test case to user"
+      description: ""
+      produces:
+      - "text/html"
+      parameters:
+      - name: "user_id"
+        in: "path"
+        type: "integer"
+        required: true
+      - name: "test case info"
+        in: "body"
+        description: "Test case ID in JSON"
+        required: true
+        schema:
+          type: "object"
+          properties:
+            testcase_id:
+              type: "integer"
+      responses:
+        200:
+          description: "Operation successful."
+        400:
+          description: "Invalid body."
+        404:
+          description: "User or test case not found."
+        415:
+          description: "Unsupported media type."
+        500:
+          description: "Operation failed."
+    delete:
+      tags:
+      - "User and role management"
+      summary: "Remove assigned role from user"
+      description: ""
+      produces:
+      - "text/html"
+      parameters:
+      - name: "user_id"
+        in: "path"
+        type: "integer"
+        required: true
+      - name: "test case info"
+        in: "body"
+        description: "Test case ID in JSON"
+        required: true
+        schema:
+          type: "object"
+          properties:
+            testcase_id:
+              type: "integer"
+      responses:
+        200:
+          description: "Operation successful."
+        400:
+          description: "Invalid body."
+        404:
+          description: "User or test case not found."
+        415:
+          description: "Unsupported media type."
+        500:
+          description: "Operation failed."
+  /users/roles:
+    get:
+      tags:
+      - "User and role management"
+      summary: "List all roles"
+      description: ""
+      produces:
+      - "application/json"
+      - "text/html"
+      responses:
+        404:
+          description: "Roles not found."
+        200:
+          description: "Operation successful. Returns roles in JSON response."
+          schema:
+            type: "object"
+            properties:
+              message:
+                type: "string"
+              object:
+                type: "array"
+                items:
+                  allOf:
+                    - $ref: "#/definitions/Role"
+                    - properties:
+                        user_ids:
+                          description: "Users having this role."
+                          type: "array"
+                          items:
+                            type: "integer"
+    post:
+      tags:
+      - "User and role management"
+      summary: "Create role"
+      description: ""
+      produces:
+      - "application/json"
+      - "text/html"
+      parameters:
+      - name: "role info"
+        in: "body"
+        description: "Role info in JSON"
+        required: true
+        schema:
+          type: "object"
+          properties:
+            name:
+              type: "string"
+      responses:
+        400:
+          description: "Invalid body."
+        415:
+          description: "Unsupported media type."
+        500:
+          description: "Operation failed."
+        200:
+          description: "Operation successful. Returns new role in JSON response."
+          schema:
+            type: "object"
+            properties:
+              message:
+                type: "string"
+              object:
+                $ref: "#/definitions/Role"
+  /users/roles/{role_id}:
+    get:
+      tags:
+      - "User and role management"
+      summary: "Get role"
+      description: ""
+      parameters:
+      - name: "role_id"
+        in: "path"
+        type: "integer"
+        required: true
+      produces:
+      - "application/json"
+      - "text/html"
+      responses:
+        404:
+          description: "Role not found."
+        200:
+          description: "Operation successful. Returns role in JSON response."
+          schema:
+            type: "object"
+            properties:
+              message:
+                type: "string"
+              object:
+                type: "object"
+                allOf:
+                  - $ref: "#/definitions/Role"
+                  - properties:
+                      user_ids:
+                        description: "Users having this role."
+                        type: "array"
+                        items:
+                          type: "integer"
+    put:
+      tags:
+      - "User and role management"
+      summary: "Update role info"
+      description: ""
+      produces:
+      - "application/json"
+      - "text/html"
+      parameters:
+      - name: "role_id"
+        in: "path"
+        type: "integer"
+        required: true
+      - name: "role info"
+        in: "body"
+        description: "Role information"
+        required: true
+        schema:
+          type: "object"
+          properties:
+            name:
+              type: "string"
+      responses:
+        200:
+          description: "Operation successful. Returns updated role in JSON response."
+          schema:
+            type: "object"
+            properties:
+              message:
+                type: "string"
+              object:
+                type: "object"
+                allOf:
+                  - $ref: "#/definitions/Role"
+                  - properties:
+                      user_ids:
+                        description: "Users having this role."
+                        type: "array"
+                        items:
+                          type: "integer"
+        400:
+          description: "Invalid body."
+        404:
+          description: "Role not found."
+        415:
+          description: "Unsupported media type."
+        500:
+          description: "Operation failed."
+    delete:
+      tags:
+      - "User and role management"
+      summary: "Delete role"
+      description: ""
+      produces:
+      - "text/html"
+      parameters:
+      - name: "role_id"
+        in: "path"
+        type: "integer"
+        required: true
+      responses:
+        200:
+          description: "Operation successful."
+        404:
+          description: "Role not found."
+        500:
+          description: "Operation failed."
+
+  /init-data:
+    post:
+      tags:
+      - "Demo Initialization"
+      summary: "Initialize ALL data in correct order."
+      description: "Calls: /init-users, /init-projects, /init-ci, /init-testlibrary, /init-requirements."
+      produces:
+      - "text/html"
+      responses:
+        200:
+          description: "Operation successful."
+        500:
+          description: "Operation failed. Prints which endpoint failed. /clean-data recommended."
+  /clean-data:
+    post:
+      tags:
+      - "Demo Initialization"
+      summary: "Cleans database data (not the connected repositories)."
+      description: ""
+      produces:
+      - "text/html"
+      responses:
+        200:
+          description: "Operation successful. All tables were removed."
+        500:
+          description: "Operation failed."
+  /init-users:
+    post:
+      tags:
+      - "Demo Initialization"
+      summary: "Initialize users and roles."
+      description: "(tables: user, role etc.)"
+      produces:
+      - "text/html"
+      responses:
+        200:
+          description: "Operation successful. Test users initialized."
+        500:
+          description: "Operation failed."
+  /init-projects:
+    post:
+      tags:
+      - "Demo Initialization"
+      summary: "Initialize projects"
+      description: "(table: project)"
+      produces:
+      - "text/html"
+      responses:
+        200:
+          description: "Operation successful. Test projects initialized."
+        500:
+          description: "Operation failed."
+  /init-testlibrary:
+    post:
+      tags:
+      - "Demo Initialization"
+      summary: "Initialize test tables for test library"
+      description: "(tables: test_plan, test_module,  gherkin_type etc.)."
+      produces:
+      - "text/html"
+      responses:
+        200:
+          description: "Operation successful. Test library tables initialized."
+        500:
+          description: "Operation failed."
+  /init-requirements:
+    post:
+      tags:
+      - "Demo Initialization"
+      summary: "Initialize test tables for requirement management"
+      description: "(tables: tag, requirement)."
+      produces:
+      - "text/html"
+      responses:
+        200:
+          description: "Operation successful. Requirement test tables initialized."
+        500:
+          description: "Operation failed."
+  /init-ci:
+    post:
+      tags:
+      - "Demo Initialization"
+      summary: "Initialize tables needed for CI/CD management"
+      description: "(tables: trigger type, result state)."
+      produces:
+      - "text/html"
+      responses:
+        200:
+          description: "Operation successful. CI/CD needed tables initialized."
+        500:
+          description: "Operation failed."
+
+  /projects:
+    get:
+      tags:
+      - "Project management"
+      summary: "List all projects"
+      description: ""
+      produces:
+      - "application/json"
+      - "text/html"
+      responses:
+        404:
+          description: "Projects not found."
+        200:
+          schema:
+            type: "object"
+            properties:
+              message:
+                type: "string"
+              object:
+                type: "array"
+                items:
+                  $ref: "#/definitions/Project"
+          description: "Operation successful. Returns projects in JSON response."
+    post:
+      tags:
+      - "Project management"
+      summary: "Create project and initialize its remote repository"
+      description: ""
+      produces:
+      - "application/json"
+      - "text/html"
+      parameters:
+      - name: "project info"
+        in: "body"
+        description: "Project information"
+        required: true
+        schema:
+          type: "object"
+          required:
+          - name
+          - repo_url
+          - ci_params
+          properties:
+            name:
+              type: "string"
+              description: "unique project name"
+            repo_url:
+              type: "string"
+            language_processor:
+              type: "string"
+              description: "currently supported: 'java-jbehave'"
+            ci_communicator:
+              type: "string"
+              description: "currently supported: 'gitlab'"
+            ci_params:
+              type: "object"
+              description: "required for Gitlab CI integration"
+              required:
+              - key
+              properties:
+                key:
+                  type: "string"
+                  description: "generated token for the repository"
+            issue_tracker:
+              type: "string"
+            issue_tracker_params:
+              type: "object"
+              description: "required for JIRA integration"
+              required:
+              - server
+              - username
+              - password
+              - project_shortcut
+              properties:
+                server:
+                  type: "string"
+                username:
+                  type: "string"
+                password:
+                  type: "string"
+                project_shortcut:
+                  type: "string"
+      responses:
+        200:
+          description: "Operation successful. Returns Project in JSON response. Affects repository."
+          schema:
+            type: "object"
+            properties:
+              message:
+                type: "string"
+              object:
+                  $ref: "#/definitions/Project"
+        400:
+          description: "Invalid body."
+        415:
+          description: "Unsupported media type."
+        500:
+          description: "Operation failed."
+  /projects/{proj_id}:
+    get:
+      tags:
+      - "Project management"
+      summary: "Get project (by set path ID)"
+      description: ""
+      produces:
+      - "application/json"
+      - "text/html"
+      parameters:
+      - name: "proj_id"
+        in: "path"
+        type: "integer"
+        required: true
+      responses:
+        404:
+          description: "Project not found."
+        200:
+          schema:
+            type: "object"
+            properties:
+              message:
+                type: "string"
+              object:
+                  $ref: "#/definitions/Project"
+          description: "Operation successful. Returns project in JSON response."
+    put:
+      tags:
+      - "Project management"
+      summary: "Update project"
+      description: ""
+      produces:
+      - "application/json"
+      - "text/html"
+      parameters:
+      - name: "proj_id"
+        in: "path"
+        type: "integer"
+        required: true
+      - name: "project info"
+        in: "body"
+        description: "Project information"
+        required: true
+        schema:
+          type: "object"
+          properties:
+            name:
+              type: "string"
+            language_processor:
+              type: "string"
+            ci_params:
+              type: "object"
+              description: "required for Gitlab CI integration"
+              required:
+              - key
+              properties:
+                key:
+                  type: "string"
+            issue_tracker:
+              type: "string"
+            issue_tracker_params:
+              type: "object"
+              description: "required for JIRA integration"
+              required:
+              - server
+              - username
+              - password
+              - project_shortcut
+              properties:
+                server:
+                  type: "string"
+                username:
+                  type: "string"
+                password:
+                  type: "string"
+                project_shortcut:
+                  type: "string"
+      responses:
+        200:
+          description: "Operation successful. Returns updated project in JSON response."
+          schema:
+            type: "object"
+            properties:
+              message:
+                type: "string"
+              object:
+                  $ref: "#/definitions/Project"
+        400:
+          description: "Invalid body."
+        404:
+          description: "Project not found."
+        415:
+          description: "Unsupported media type."
+        500:
+          description: "Operation failed."
+    delete:
+      tags:
+      - "Project management"
+      summary: "Clean project repository and delete project"
+      description: ""
+      produces:
+      - "text/html"
+      parameters:
+      - name: "proj_id"
+        in: "path"
+        type: "integer"
+        required: true
+      - name: "delete_project_in_dbs"
+        description: "Delete project in database."
+        in: "query"
+        type: "boolean"
+        default: false
+      responses:
+        200:
+          description: "Operation successful."
+        404:
+          description: "Project not found."
+        500:
+          description: "Operation failed."
+
+  /projects/plans:
+    get:
+      tags:
+      - "Test library - plans and modules"
+      summary: "List all test plans"
+      description: ""
+      produces:
+      - "application/json"
+      - "text/html"
+      responses:
+        404:
+          description: "Test plans not found."
+        200:
+          schema:
+            type: "object"
+            properties:
+              message:
+                type: "string"
+              object:
+                type: "array"
+                items:
+                  $ref: "#/definitions/TestPlan"
+          description: "Operation successful. Returns test plan in JSON response."
+  /projects/{proj_id}/plans:
+    get:
+      tags:
+      - "Test library - plans and modules"
+      summary: "List all test plans from project"
+      description: "At current a project can have max 1 test plan."
+      parameters:
+      - name: "proj_id"
+        in: "path"
+        type: "integer"
+        required: true
+      responses:
+        404:
+          description: "Test plans not found."
+        200:
+          schema:
+            type: "object"
+            properties:
+              message:
+                type: "string"
+              object:
+                type: "array"
+                items:
+                  $ref: "#/definitions/TestPlan"
+          description: "Operation successful. Returns test plans in JSON response."
+    post:
+      tags:
+      - "Test library - plans and modules"
+      summary: "Create test plan for project"
+      description: ""
+      produces:
+      - "application/json"
+      - "text/html"
+      parameters:
+      - name: "proj_id"
+        in: "path"
+        type: "integer"
+        required: true
+      - name: "test plan info"
+        in: "body"
+        description: "Test plan information"
+        required: true
+        schema:
+          type: "object"
+          required:
+          - name
+          properties:
+            name:
+              type: "string"
+            description:
+              type: "string"
+      responses:
+        200:
+          description: "Operation successful."
+          schema:
+            type: "object"
+            properties:
+              message:
+                type: "string"
+              object:
+                $ref: "#/definitions/TestPlan"
+        400:
+          description: "Invalid body or project has already test plan."
+        415:
+          description: "Unsupported media type."
+        500:
+          description: "Operation failed."
+  /projects/{proj_id}/plans/{tp_id}:
+    get:
+      tags:
+      - "Test library - plans and modules"
+      summary: "Get test plan from project"
+      description: "At current a project can have max 1 test plan."
+      parameters:
+      - name: "proj_id"
+        description: "project id"
+        in: "path"
+        type: "integer"
+        required: true
+      - name: "tp_id"
+        description: "test plan id"
+        in: "path"
+        type: "integer"
+        required: true
+      responses:
+        404:
+          description: "Test plan or project not found."
+        200:
+          schema:
+            type: "object"
+            properties:
+              message:
+                type: "string"
+              object:
+                $ref: "#/definitions/TestPlan"
+          description: "Operation successful. Returns test plan in JSON response."
+    put:
+      tags:
+      - "Test library - plans and modules"
+      summary: "Update test plan info in project"
+      description: ""
+      produces:
+      - "application/json"
+      - "text/html"
+      parameters:
+      - name: "proj_id"
+        description: "project id"
+        in: "path"
+        type: "integer"
+        required: true
+      - name: "tp_id"
+        description: "test plan id"
+        in: "path"
+        type: "integer"
+        required: true
+      - name: "test plan info"
+        in: "body"
+        description: "Role information"
+        required: true
+        schema:
+          type: "object"
+          properties:
+            name:
+              type: "string"
+            description:
+              type: "string"
+      responses:
+        200:
+          description: "Operation successful. Returns updated test plan in JSON response."
+          schema:
+            type: "object"
+            properties:
+              message:
+                type: "string"
+              object:
+                $ref: "#/definitions/TestPlan"
+        400:
+          description: "Invalid body."
+        404:
+          description: "Test plan or project not found."
+        415:
+          description: "Unsupported media type."
+        500:
+          description: "Operation failed."
+
+  /projects/{proj_id}/plans/{tp_id}/mods:
+    post:
+      tags:
+      - "Test library - plans and modules"
+      summary: "Create test module for test plan"
+      description: ""
+      produces:
+      - "application/json"
+      - "text/html"
+      parameters:
+      - name: "proj_id"
+        description: "project id"
+        in: "path"
+        type: "integer"
+        required: true
+      - name: "tp_id"
+        description: "test plan id"
+        in: "path"
+        type: "integer"
+        required: true
+      - name: "test module info"
+        in: "body"
+        description: "Test module information"
+        required: true
+        schema:
+          type: "object"
+          required:
+          - name
+          properties:
+            name:
+              type: "string"
+      responses:
+        200:
+          description: "Operation successful. Returns test module in JSON response."
+          schema:
+            type: "object"
+            properties:
+              message:
+                type: "string"
+              object:
+                $ref: "#/definitions/TestModule"
+        400:
+          description: "Invalid body."
+        404:
+          description: "Project, or test plan not found."
+        415:
+          description: "Unsupported media type."
+        500:
+          description: " Operation failed."
+  /projects/{proj_id}/plans/{tp_id}/mods/{tm_id}:
+    get:
+      tags:
+      - "Test library - plans and modules"
+      summary: "Get test module from test plan"
+      description: ""
+      produces:
+      - "application/json"
+      - "text/html"
+      parameters:
+      - name: "proj_id"
+        description: "project id"
+        in: "path"
+        type: "integer"
+        required: true
+      - name: "tp_id"
+        description: "test plan id"
+        in: "path"
+        type: "integer"
+        required: true
+      - name: "tm_id"
+        description: "test module id"
+        in: "path"
+        type: "integer"
+        required: true
+      responses:
+        404:
+          description: "Project, test plan or test module not found."
+        200:
+          schema:
+            type: "object"
+            properties:
+              message:
+                type: "string"
+              object:
+                $ref: "#/definitions/TestModule"
+          description: "Operation successful. Returns module in JSON response."
+    put:
+      tags:
+      - "Test library - plans and modules"
+      summary: "Update test module info in test plan"
+      description: ""
+      produces:
+      - "application/json"
+      - "text/html"
+      parameters:
+      - name: "proj_id"
+        description: "project id"
+        in: "path"
+        type: "integer"
+        required: true
+      - name: "tp_id"
+        description: "test plan id"
+        in: "path"
+        type: "integer"
+        required: true
+      - name: "tm_id"
+        description: "test module id"
+        in: "path"
+        type: "integer"
+        required: true
+      - name: "test module info"
+        in: "body"
+        description: "Test module information"
+        required: true
+        schema:
+          type: "object"
+          required:
+          - name
+          properties:
+            name:
+              type: "string"
+      responses:
+        200:
+          description: "Operation successful. Returns updated test module in JSON response. Affects repository."
+          schema:
+            type: "object"
+            properties:
+              message:
+                type: "string"
+              object:
+                $ref: "#/definitions/TestModule"
+        400:
+          description: "Invalid body."
+        404:
+          description: "Project, test plan or test module not found."
+        415:
+          description: "Unsupported media type."
+        500:
+          description: "Operation failed."
+    delete:
+      tags:
+      - "Test library - plans and modules"
+      summary: "Delete test module of test plan"
+      description: ""
+      produces:
+      - "application/json"
+      - "text/html"
+      parameters:
+      - name: "proj_id"
+        description: "project id"
+        in: "path"
+        type: "integer"
+        required: true
+      - name: "tp_id"
+        description: "test plan id"
+        in: "path"
+        type: "integer"
+        required: true
+      - name: "tm_id"
+        description: "test module id"
+        in: "path"
+        type: "integer"
+        required: true
+      responses:
+        200:
+          description: "Operation successful. Affects repository."
+        404:
+          description: "Project, test plan, or test module not found."
+        500:
+          description: "Operation failed."
+  /projects/{proj_id}/plans/{tp_id}/mods/{tm_id}/cases:
+    get:
+      tags:
+      - "Test library - cases and steps"
+      summary: "Get test cases in module"
+      description: ""
+      produces:
+      - "application/json"
+      - "text/html"
+      parameters:
+      - name: "proj_id"
+        description: "project id"
+        in: "path"
+        type: "integer"
+        required: true
+      - name: "tp_id"
+        description: "test plan id"
+        in: "path"
+        type: "integer"
+        required: true
+      - name: "tm_id"
+        description: "test module id"
+        in: "path"
+        type: "integer"
+        required: true
+      responses:
+        404:
+          description: "Project, test plan, test module not found, or test module does not have any test cases."
+        200:
+          schema:
+            type: "object"
+            properties:
+              message:
+                type: "string"
+              object:
+                type: "array"
+                items:
+                  $ref: "#/definitions/TestCase"
+          description: "Operation successful. Returns test cases in JSON response."
+    post:
+      tags:
+      - "Test library - cases and steps"
+      summary: "Create test case (basic object) in test module"
+      description: ""
+      produces:
+      - "application/json"
+      - "text/html"
+      parameters:
+      - name: "proj_id"
+        description: "project id"
+        in: "path"
+        type: "integer"
+        required: true
+      - name: "tp_id"
+        description: "test plan id"
+        in: "path"
+        type: "integer"
+        required: true
+      - name: "tm_id"
+        description: "test module id"
+        in: "path"
+        type: "integer"
+        required: true
+      - name: "test case info"
+        in: "body"
+        description: "Test case information"
+        schema:
+          type: "object"
+          properties:
+            name:
+              type: "string"
+            priority:
+              enum: ["high", "medium", "low"]
+              description: "Default priority types: low/medium/high."
+              type: "string"
+            description:
+              type: "string"
+            users_assigned:
+              description: "Adding users having this test case assigned."
+              type: "array"
+              items:
+                type: "integer"
+      responses:
+        200:
+          description: "Operation successful. Returns test case in JSON response."
+          schema:
+            type: "object"
+            properties:
+              message:
+                type: "string"
+              object:
+                $ref: "#/definitions/TestCase"
+        400:
+          description: "Invalid body."
+        404:
+          description: "Project, test plan, or test module not found."
+        415:
+          description: "Unsupported media type."
+        500:
+          description: " Operation failed."
+  /projects/{proj_id}/plans/{tp_id}/mods/{tm_id}/cases/{tc_id}:
+    get:
+      tags:
+      - "Test library - cases and steps"
+      summary: "Get detailed test case (by set path ID)"
+      description: ""
+      produces:
+      - "application/json"
+      - "text/html"
+      parameters:
+      - name: "proj_id"
+        description: "project id"
+        in: "path"
+        type: "integer"
+        required: true
+      - name: "tp_id"
+        description: "test plan id"
+        in: "path"
+        type: "integer"
+        required: true
+      - name: "tm_id"
+        description: "test module id"
+        in: "path"
+        type: "integer"
+        required: true
+      - name: "tc_id"
+        description: "test case id"
+        in: "path"
+        type: "integer"
+        required: true
+      responses:
+        404:
+          description: "Project, test plan, test module, or test case not found."
+        200:
+          schema:
+            type: "object"
+            properties:
+              message:
+                type: "string"
+              object:
+                type: "array"
+                items:
+                  allOf:
+                    - $ref: "#/definitions/TestCase"
+                    - properties:
+                        users_assigned:
+                          description: "Users assigned to this test case."
+                          type: "array"
+                          items:
+                            type: "integer"
+                        scenario_content:
+                          type: "string"
+          description: "Operation successful. Returns detailed test case in JSON response."
+    post:
+      tags:
+      - "Test library - cases and steps"
+      summary: "Add/modify scenario with test steps to test case"
+      description: ""
+      consumes:
+        - "text/plain"
+      produces:
+      - "application/json"
+      - "text/html"
+      parameters:
+      - name: "proj_id"
+        description: "project id"
+        in: "path"
+        type: "integer"
+        required: true
+      - name: "tp_id"
+        description: "test plan id"
+        in: "path"
+        type: "integer"
+        required: true
+      - name: "tm_id"
+        description: "test module id"
+        in: "path"
+        type: "integer"
+        required: true
+      - name: "tc_id"
+        description: "test case id"
+        in: "path"
+        type: "integer"
+        required: true
+      - name: "BDD scenario with steps"
+        in: "body"
+        description: "Scenario with basic steps in JBehave syntax. [text/plain]"
+        required: true
+        schema:
+          type: "string"
+      responses:
+        200:
+          description: "Operation successful. Returns modified test case in JSON response."
+          schema:
+            type: "object"
+            properties:
+              message:
+                type: "string"
+              object:
+                type: "array"
+                items:
+                  allOf:
+                    - $ref: "#/definitions/TestCase"
+                    - properties:
+                        users_assigned:
+                          description: "Users assigned to this test case."
+                          type: "array"
+                          items:
+                            type: "integer"
+        400:
+          description: "Invalid body or operation failed due to TestBuDDy setting problem."
+        404:
+          description: "Project, test plan, or test module not found."
+        415:
+          description: "Unsupported media type."
+        500:
+          description: " Operation failed."
+    put:
+      tags:
+      - "Test library - cases and steps"
+      summary: "Update test case info"
+      description: ""
+      produces:
+      - "application/json"
+      - "text/html"
+      parameters:
+      - name: "proj_id"
+        description: "project id"
+        in: "path"
+        type: "integer"
+        required: true
+      - name: "tp_id"
+        description: "test plan id"
+        in: "path"
+        type: "integer"
+        required: true
+      - name: "tm_id"
+        description: "test module id"
+        in: "path"
+        type: "integer"
+        required: true
+      - name: "tc_id"
+        description: "test case id"
+        in: "path"
+        type: "integer"
+        required: true
+      - name: "test case info"
+        in: "body"
+        description: "Test case information"
+        schema:
+          type: "object"
+          properties:
+            name:
+              type: "string"
+            priority:
+              enum: ["high", "medium", "low"]
+              description: "Default priority types: low/medium/high."
+              type: "string"
+            description:
+              type: "string"
+            users_assigned:
+              description: "Adding users having this test case assigned."
+              type: "array"
+              items:
+                type: "integer"
+      responses:
+        200:
+          description: "Operation successful. Returns test case in JSON response. Affects repository."
+          schema:
+            type: "object"
+            properties:
+              message:
+                type: "string"
+              object:
+                type: "array"
+                items:
+                  allOf:
+                    - $ref: "#/definitions/TestCase"
+                    - properties:
+                        users_assigned:
+                          description: "Users having this test case assigned."
+                          type: "array"
+                          items:
+                            type: "integer"
+        400:
+          description: "Invalid body."
+        404:
+          description: "Project, test plan, or test module not found."
+        415:
+          description: "Unsupported media type."
+        500:
+          description: " Operation failed."
+    delete:
+      tags:
+      - "Test library - cases and steps"
+      summary: "Delete test case"
+      description: ""
+      produces:
+      - "application/json"
+      - "text/html"
+      parameters:
+      - name: "proj_id"
+        description: "project id"
+        in: "path"
+        type: "integer"
+        required: true
+      - name: "tp_id"
+        description: "test plan id"
+        in: "path"
+        type: "integer"
+        required: true
+      - name: "tm_id"
+        description: "test module id"
+        in: "path"
+        type: "integer"
+        required: true
+      - name: "tc_id"
+        description: "test case id"
+        in: "path"
+        type: "integer"
+        required: true
+      responses:
+        200:
+          description: "Operation successful."
+        404:
+          description: "Project, test plan, test module or test case not found."
+        500:
+          description: "Operation failed."
+  /projects/{proj_id}/stepdefinitions:
+    get:
+      tags:
+      - "Test library - cases and steps"
+      summary: "Get test steps definitions for project"
+      description: ""
+      produces:
+      - "application/json"
+      - "text/html"
+      parameters:
+      - name: "proj_id"
+        description: "project id"
+        in: "path"
+        type: "integer"
+        required: true
+      responses:
+        404:
+          description: "Project or test steps definitions not found."
+        200:
+          schema:
+            type: "object"
+            properties:
+              message:
+                type: "string"
+              object:
+                type: "array"
+                items:
+                  $ref: "#/definitions/TestStepDefinition"
+          description: "Operation successful. Returns test step definitions in JSON response."
+  /projects/{proj_id}/stepdefinitions/{def_id}/steps:
+    get:
+      tags:
+      - "Test library - cases and steps"
+      summary: "List test steps that use the test step definition (set by path ID)"
+      description: ""
+      produces:
+      - "application/json"
+      - "text/html"
+      parameters:
+      - name: "proj_id"
+        description: "project id"
+        in: "path"
+        type: "integer"
+        required: true
+      - name: "def_id"
+        description: "test step definition id"
+        in: "path"
+        type: "integer"
+        required: true
+      responses:
+        404:
+          description: "Project, test steps definitions or test steps of the project not found."
+        200:
+          schema:
+            type: "object"
+            properties:
+              message:
+                type: "string"
+              object:
+                type: "array"
+                items:
+                  type: "object"
+                  description: "TestStep - basic info"
+                  properties:
+                    id:
+                      type: "integer"
+                    content:
+                      type: "string"
+                    order:
+                      type: "integer"
+                    in_test_case:
+                      type: "integer"
+          description: "Operation successful. Returns test steps using this test step definition JSON response."
+
+  /projects/{proj_id}/init_repo:
+    get:
+      tags:
+      - "Test execution - test run management and reporting"
+      summary: "Initialize project repository basic files"
+      description: ""
+      produces:
+      - "text/html"
+      parameters:
+      - name: "proj_id"
+        description: "project id"
+        in: "path"
+        type: "integer"
+        required: true
+      responses:
+        404:
+          description: "Project not found."
+        400:
+          description: "Operation failed due to TestBuDDy setting or CI problem."
+        200:
+          description: "Operation successful."
+  /projects/{proj_id}/purge_repo:
+    get:
+      tags:
+      - "Test execution - test run management and reporting"
+      summary: "Forcefully erase TestBuDDy part of repository. (Does not erase project test library in database)"
+      description: ""
+      produces:
+      - "text/html"
+      - "application/json"
+      parameters:
+      - name: "proj_id"
+        description: "project id"
+        in: "path"
+        type: "integer"
+        required: true
+      responses:
+        404:
+          description: "Project not found."
+        400:
+          description: "Operation failed due to TestBuDDy setting or CI problem."
+        200:
+          description: "Operation successful."
+  /projects/{proj_id}/ci_runs:
+    get:
+      tags:
+      - "Test execution - test run management and reporting"
+      summary: "List updated test runs (CI Runs) for project"
+      description: "It can take some time, progress in TestBuddy CLI output."
+      produces:
+      - "application/json"
+      - "text/html"
+      parameters:
+      - name: "proj_id"
+        description: "project id"
+        in: "path"
+        type: "integer"
+        required: true
+      responses:
+        404:
+          description: "Project or its CI Runs not found."
+        200:
+          schema:
+            type: "object"
+            properties:
+              message:
+                type: "string"
+              object:
+                type: "array"
+                items:
+                  $ref: "#/definitions/CIRun_base"
+          description: "Operation successful. Returns CI Runs in JSON response."
+  /projects/{proj_id}/ci_runs/{pipeline_id}:
+    get:
+      tags:
+      - "Test execution - test run management and reporting"
+      summary: "Get test run (CI Run) by pipeline_id"
+      description: "It can take some time, progress in TestBuddy CLI output."
+      produces:
+      - "application/json"
+      - "text/html"
+      parameters:
+      - name: "proj_id"
+        description: "project id"
+        in: "path"
+        type: "integer"
+        required: true
+      - name: "pipeline_id"
+        description: "pipeline id connected to test run"
+        in: "path"
+        type: "integer"
+        required: true
+      responses:
+        404:
+          description: "Project or CI Run for pipeline not found."
+        200:
+          schema:
+            type: "object"
+            properties:
+              message:
+                type: "string"
+              object:
+                $ref: "#/definitions/CIRun_full"
+          description: "Operation successful. Returns detailed CI Run in JSON response."
+  /projects/{proj_id}/ci_runs/trigger_pipeline:
+    post:
+      tags:
+      - "Test execution - test run management and reporting"
+      summary: "Trigger new test run (CI run) on current repository commit"
+      description: ""
+      produces:
+      - "text/html"
+      parameters:
+      - name: "proj_id"
+        description: "project id"
+        in: "path"
+        type: "integer"
+        required: true
+      responses:
+        404:
+          description: "Project not found."
+        500:
+          description: "Operation failed."
+        200:
+          schema:
+            type: "object"
+            properties:
+              message:
+                type: "string"
+              object:
+                $ref: "#/definitions/CIRun_base"
+          description: "Operation successful. Returns test run (CI Run) in JSON response."
+  /projects/{proj_id}/ci_runs/sync:
+    post:
+      tags:
+      - "Test execution - test run management and reporting"
+      summary: "Sync and renew CI Run library (test runs, reports, issues)"
+      description: >-
+          Choose what to renew by supplying query paramers:
+          'pipelines' for CI Runs to sync with CI,
+          'reports' for generating reports for current CI Runs,
+          'bugs' for updating bugs based on current reports and cross syncing with an issue tracker.|
+          Default: SYNC ALL | It can take a bit time, progress in TestBuddy CLI output.
+      produces:
+      - "application/json"
+      - "text/html"
+      parameters:
+      - name: "proj_id"
+        description: "project id"
+        in: "path"
+        type: "integer"
+        required: true
+      - name: "pipelines"
+        description: "choose to sync CI Runs"
+        in: "query"
+        type: "boolean"
+      - name: "reports"
+        description: "choose to sync reports based on current CI Runs"
+        in: "query"
+        type: "boolean"
+      - name: "bugs"
+        description: "choose to sync bugs based on current CI Runs reports, send message to linked bugs"
+        in: "query"
+        type: "boolean"
+      responses:
+        404:
+          description: "Project or its CI Runs not found."
+        200:
+          schema:
+            type: "object"
+            properties:
+              message:
+                type: "string"
+              object:
+                type: "array"
+                items:
+                  $ref: "#/definitions/CIRun_base"
+          description: "Operation successful. Returns CI Runs in JSON response."
+  /projects/{proj_id}/ci_runs/reports:
+    get:
+      tags:
+      - "Test execution - test run management and reporting"
+      summary: "Get project reports, triggers report syncing"
+      produces:
+      - "application/json"
+      - "text/html"
+      parameters:
+      - name: "proj_id"
+        description: "project id"
+        in: "path"
+        type: "integer"
+        required: true
+      responses:
+        404:
+          description: "Project or reports not found."
+        200:
+          schema:
+            type: "object"
+            properties:
+              message:
+                type: "string"
+              object:
+                type: "array"
+                items:
+                  $ref: "#/definitions/Report"
+          description: "Operation successful. Returns reports in JSON response."
+  /projects/{proj_id}/ci_runs/{pipeline_id}/reports:
+    get:
+      tags:
+      - "Test execution - test run management and reporting"
+      summary: "Get report for pipeline_id, triggers report syncing"
+      produces:
+      - "application/json"
+      - "text/html"
+      parameters:
+      - name: "proj_id"
+        description: "project id"
+        in: "path"
+        type: "integer"
+        required: true
+      - name: "pipeline_id"
+        description: "pipeline id"
+        in: "path"
+        type: "integer"
+        required: true
+      responses:
+        404:
+          description: "Project, CI Run or report not found."
+        200:
+          schema:
+            type: "object"
+            properties:
+              message:
+                type: "string"
+              object:
+                $ref: "#/definitions/Report"
+          description: "Operation successful. Returns report in JSON response."
+
+
+  /projects/{proj_id}/bugs:
+    get:
+      tags:
+      - "Incident management"
+      summary: "Get project bugs"
+      produces:
+      - "application/json"
+      - "text/html"
+      parameters:
+      - name: "proj_id"
+        description: "project id"
+        in: "path"
+        type: "integer"
+        required: true
+      responses:
+        404:
+          description: "Project or bugs not found."
+        200:
+          schema:
+            type: "object"
+            properties:
+              message:
+                type: "string"
+              object:
+                type: "array"
+                items:
+                  $ref: "#/definitions/Bug_full"
+          description: "Operation successful. Returns detailed bug in JSON response."
+  /projects/{proj_id}/bugs/{bug_id}:
+    get:
+      tags:
+      - "Incident management"
+      summary: "Get bug"
+      produces:
+      - "application/json"
+      - "text/html"
+      parameters:
+      - name: "proj_id"
+        description: "project id"
+        in: "path"
+        type: "integer"
+        required: true
+      - name: "bug_id"
+        description: "bug id"
+        in: "path"
+        type: "integer"
+        required: true
+      responses:
+        404:
+          description: "Project or bug not found."
+        200:
+          schema:
+            type: "object"
+            properties:
+              message:
+                type: "string"
+              object:
+                $ref: "#/definitions/Bug_full"
+          description: "Operation successful. Returns detailed bug in JSON response."
+    post:
+      tags:
+      - "Incident management"
+      summary: "Add link to bug, triggers sync with Issue tracker"
+      produces:
+      - "application/json"
+      - "text/html"
+      parameters:
+      - name: "proj_id"
+        description: "project id"
+        in: "path"
+        type: "integer"
+        required: true
+      - name: "bug_id"
+        description: "bug id"
+        in: "path"
+        type: "integer"
+        required: true
+      - name: "bug info with link"
+        in: "body"
+        description: "Bug information"
+        schema:
+          required:
+          - link
+          type: "object"
+          properties:
+            link:
+              type: "string"
+      responses:
+        400:
+          description: "Invalid body"
+        404:
+          description: "Project or bug not found."
+        500:
+          description: "Operation failed."
+        200:
+          schema:
+            type: "object"
+            properties:
+              message:
+                type: "string"
+              object:
+                type: "array"
+                items:
+                  $ref: "#/definitions/Bug_full"
+          description: "Operation successful. Returns updated detailed bug in JSON response."
+
+
+  /projects/{proj_id}/tags:
+    get:
+      tags:
+      - "Requirement management"
+      summary: "Get project tags"
+      description: ""
+      produces:
+      - "application/json"
+      - "text/html"
+      parameters:
+      - name: "proj_id"
+        description: "project id"
+        in: "path"
+        type: "integer"
+        required: true
+      responses:
+        404:
+          description: "Project or its tags not found."
+        200:
+          schema:
+            type: "object"
+            properties:
+              message:
+                type: "string"
+              object:
+                type: "array"
+                items:
+                  $ref: "#/definitions/Tag"
+          description: "Operation successful. Returns tags in JSON response."
+    post:
+      tags:
+      - "Requirement management"
+      summary: "Create tag for project"
+      description: ""
+      produces:
+      - "application/json"
+      - "text/html"
+      parameters:
+      - name: "proj_id"
+        in: "path"
+        type: "integer"
+        required: true
+      - name: "tag info"
+        in: "body"
+        description: "Tag information"
+        required: true
+        schema:
+          type: "object"
+          required:
+          - content
+          - category
+          properties:
+            content:
+              type: "string"
+            category:
+              type: "string"
+      responses:
+        200:
+          description: "Operation successful. Returns tag in JSON response."
+          schema:
+            type: "object"
+            properties:
+              message:
+                type: "string"
+              object:
+                $ref: "#/definitions/Tag"
+        400:
+          description: "Invalid body."
+        415:
+          description: "Unsupported media type."
+        500:
+          description: "Operation failed."
+  /projects/{proj_id}/tags/{tag_id}:
+    get:
+      tags:
+      - "Requirement management"
+      summary: "Get tag for project"
+      description: ""
+      produces:
+      - "application/json"
+      - "text/html"
+      parameters:
+      - name: "proj_id"
+        description: "project id"
+        in: "path"
+        type: "integer"
+        required: true
+      - name: "tag_id"
+        description: "tag id"
+        in: "path"
+        type: "integer"
+        required: true
+      responses:
+        404:
+          description: "Project or tag not found."
+        200:
+          schema:
+            type: "object"
+            properties:
+              message:
+                type: "string"
+              object:
+                $ref: "#/definitions/Tag"
+          description: "Operation successful. Returns tag in JSON response."
+    put:
+      tags:
+      - "Requirement management"
+      summary: "Update tag info"
+      description: ""
+      produces:
+      - "application/json"
+      - "text/html"
+      parameters:
+      - name: "proj_id"
+        description: "project id"
+        in: "path"
+        type: "integer"
+        required: true
+      - name: "tag_id"
+        description: "tag id"
+        in: "path"
+        type: "integer"
+        required: true
+      - name: "Tag info"
+        in: "body"
+        description: "Tag information"
+        required: true
+        schema:
+          type: "object"
+          properties:
+            content:
+              type: "string"
+            category:
+              type: "string"
+      responses:
+        200:
+          description: "Operation successful. Returns updated tag in JSON response."
+          schema:
+            type: "object"
+            properties:
+              message:
+                type: "string"
+              object:
+                $ref: "#/definitions/Tag"
+        400:
+          description: "Invalid body."
+        404:
+          description: "Project or tag not found."
+        415:
+          description: "Unsupported media type."
+        500:
+          description: "Operation failed."
+    delete:
+      tags:
+      - "Requirement management"
+      summary: "Delete tag"
+      description: ""
+      produces:
+      - "text/html"
+      parameters:
+      - name: "proj_id"
+        description: "project id"
+        in: "path"
+        type: "integer"
+        required: true
+      - name: "tag_id"
+        description: "tag id"
+        in: "path"
+        type: "integer"
+        required: true
+      responses:
+        200:
+          description: "Operation successful."
+        404:
+          description: "Project or tag not found."
+        500:
+          description: "Operation failed."
+
+  /projects/{proj_id}/requirements:
+    get:
+      tags:
+      - "Requirement management"
+      summary: "Get project requirements."
+      description: ""
+      produces:
+      - "application/json"
+      - "text/html"
+      parameters:
+      - name: "proj_id"
+        description: "project id"
+        in: "path"
+        type: "integer"
+        required: true
+      responses:
+        404:
+          description: "Project or its requirements not found."
+        200:
+          schema:
+            type: "object"
+            properties:
+              message:
+                type: "string"
+              object:
+                type: "array"
+                items:
+                  $ref: "#/definitions/Requirement_full"
+          description: "Operation successful. Returns requirements in JSON response."
+    post:
+      tags:
+      - "Requirement management"
+      summary: "Create requirement for project."
+      description: ""
+      produces:
+      - "application/json"
+      - "text/html"
+      parameters:
+      - name: "proj_id"
+        in: "path"
+        type: "integer"
+        required: true
+      - name: "requirement info"
+        in: "body"
+        description: "Requirement information"
+        required: true
+        schema:
+          type: "object"
+          required:
+          - content
+          properties:
+            content:
+              type: "string"
+      responses:
+        200:
+          description: "Operation successful. Returns tag in JSON response."
+          schema:
+            type: "object"
+            properties:
+              message:
+                type: "string"
+              object:
+                $ref: "#/definitions/Tag"
+        400:
+          description: "Invalid body."
+        415:
+          description: "Unsupported media type."
+        500:
+          description: "Operation failed."
+
+  /projects/{proj_id}/requirements/{req_id}:
+    get:
+      tags:
+      - "Requirement management"
+      summary: "Get requirement for project"
+      description: ""
+      produces:
+      - "application/json"
+      - "text/html"
+      parameters:
+      - name: "proj_id"
+        description: "project id"
+        in: "path"
+        type: "integer"
+        required: true
+      - name: "req_id"
+        description: "requirement id"
+        in: "path"
+        type: "integer"
+        required: true
+      responses:
+        404:
+          description: "Project or requirement not found."
+        200:
+          schema:
+            type: "object"
+            properties:
+              message:
+                type: "string"
+              object:
+                $ref: "#/definitions/Requirement_full"
+          description: "Operation successful. Returns requirement in JSON response."
+    put:
+      tags:
+      - "Requirement management"
+      summary: "Update requirement info"
+      description: ""
+      produces:
+      - "application/json"
+      - "text/html"
+      parameters:
+      - name: "proj_id"
+        description: "project id"
+        in: "path"
+        type: "integer"
+        required: true
+      - name: "req_id"
+        description: "requirement id"
+        in: "path"
+        type: "integer"
+        required: true
+      - name: "Requirement info"
+        in: "body"
+        description: "Requirement information"
+        required: true
+        schema:
+          type: "object"
+          properties:
+            content:
+              type: "string"
+      responses:
+        200:
+          description: "Operation successful. Returns updated requirement in JSON response."
+          schema:
+            type: "object"
+            properties:
+              message:
+                type: "string"
+              object:
+                $ref: "#/definitions/Requirement_full"
+        400:
+          description: "Invalid body."
+        404:
+          description: "Project or requirement not found."
+        415:
+          description: "Unsupported media type."
+        500:
+          description: "Operation failed."
+    delete:
+      tags:
+      - "Requirement management"
+      summary: "Delete requirement"
+      description: ""
+      produces:
+      - "text/html"
+      parameters:
+      - name: "proj_id"
+        description: "project id"
+        in: "path"
+        type: "integer"
+        required: true
+      - name: "req_id"
+        description: "requirement id"
+        in: "path"
+        type: "integer"
+        required: true
+      responses:
+        200:
+          description: "Operation successful."
+        404:
+          description: "Project or requirement not found."
+        500:
+          description: "Operation failed."
+
+  /projects/{proj_id}/requirements/{req_id}/assign-tag:
+    post:
+      tags:
+      - "Requirement management"
+      summary: "Assign tag to requirement"
+      description: ""
+      produces:
+      - "text/html"
+      - "application/json"
+      parameters:
+      - name: "proj_id"
+        description: "project id"
+        in: "path"
+        type: "integer"
+        required: true
+      - name: "req_id"
+        description: "requirement id"
+        in: "path"
+        type: "integer"
+        required: true
+      - name: "tag info"
+        in: "body"
+        description: "Tag ID in JSON"
+        required: true
+        schema:
+          type: "object"
+          properties:
+            tag_id:
+              type: "integer"
+      responses:
+        200:
+          description: "Operation successful. Returns updated requirement in JSON."
+          schema:
+            type: "object"
+            properties:
+              message:
+                type: "string"
+              object:
+                $ref: "#/definitions/Requirement_full"
+        400:
+          description: "Invalid body."
+        404:
+          description: "Requirement or project not found."
+        415:
+          description: "Unsupported media type."
+        500:
+          description: "Operation failed."
+    delete:
+      tags:
+      - "Requirement management"
+      summary: "Remove assigned tag from requirement"
+      description: ""
+      produces:
+      - "text/html"
+      - "application/json"
+      parameters:
+      - name: "proj_id"
+        description: "project id"
+        in: "path"
+        type: "integer"
+        required: true
+      - name: "req_id"
+        description: "requirement id"
+        in: "path"
+        type: "integer"
+        required: true
+      - name: "tag info"
+        in: "body"
+        description: "Tag ID in JSON"
+        required: true
+        schema:
+          type: "object"
+          properties:
+            tag_id:
+              type: "integer"
+      responses:
+        200:
+          description: "Operation successful. Returns updated requirement in JSON."
+          schema:
+            type: "object"
+            properties:
+              message:
+                type: "string"
+              object:
+                $ref: "#/definitions/Requirement_full"
+        400:
+          description: "Invalid body."
+        404:
+          description: "Requirement or project not found."
+        415:
+          description: "Unsupported media type."
+        500:
+          description: "Operation failed."
+
+  /projects/{proj_id}/plans/{tp_id}/mods/{tm_id}/cases/{tc_id}/requirements:
+    get:
+      tags:
+      - "Requirement management"
+      summary: "Get test case requirements."
+      description: ""
+      produces:
+      - "application/json"
+      - "text/html"
+      parameters:
+      - name: "proj_id"
+        description: "project id"
+        in: "path"
+        type: "integer"
+        required: true
+      - name: "tp_id"
+        description: "test plan id"
+        in: "path"
+        type: "integer"
+        required: true
+      - name: "tm_id"
+        description: "test module id"
+        in: "path"
+        type: "integer"
+        required: true
+      - name: "tc_id"
+        description: "test case id"
+        in: "path"
+        type: "integer"
+        required: true
+      responses:
+        404:
+          description: "Project, test plan, test module, test case or its requirements not found."
+        200:
+          schema:
+            type: "object"
+            properties:
+              message:
+                type: "string"
+              object:
+                type: "array"
+                items:
+                  $ref: "#/definitions/Requirement_full"
+          description: "Operation successful. Returns requirements in JSON response."
+
+  /projects/{proj_id}/plans/{tp_id}/mods/{tm_id}/cases/{tc_id}/requirements/assign-requirement:
+    post:
+      tags:
+      - "Requirement management"
+      summary: "Assign requirement to test case."
+      description: ""
+      produces:
+      - "application/json"
+      - "text/html"
+      parameters:
+      - name: "proj_id"
+        description: "project id"
+        in: "path"
+        type: "integer"
+        required: true
+      - name: "tp_id"
+        description: "test plan id"
+        in: "path"
+        type: "integer"
+        required: true
+      - name: "tm_id"
+        description: "test module id"
+        in: "path"
+        type: "integer"
+        required: true
+      - name: "tc_id"
+        description: "test case id"
+        in: "path"
+        type: "integer"
+        required: true
+      - name: "requirement info"
+        in: "body"
+        description: "Requirement ID in JSON"
+        required: true
+        schema:
+          type: "object"
+          properties:
+            requirement_id:
+              type: "integer"
+      responses:
+        200:
+          schema:
+            type: "object"
+            properties:
+              message:
+                type: "string"
+              object:
+                type: "array"
+                items:
+                  $ref: "#/definitions/Requirement_full"
+          description: "Operation successful. Returns test case current requirements in JSON response."
+        400:
+          description: "Invalid body."
+        404:
+          description: "Project, test plan, test module, test case or its requirements not found."
+        415:
+          description: "Unsupported media type."
+        500:
+          description: "Operation failed."
+    delete:
+      tags:
+      - "Requirement management"
+      summary: "Deleted assigned requirement from test case."
+      description: ""
+      produces:
+      - "application/json"
+      - "text/html"
+      parameters:
+      - name: "proj_id"
+        description: "project id"
+        in: "path"
+        type: "integer"
+        required: true
+      - name: "tp_id"
+        description: "test plan id"
+        in: "path"
+        type: "integer"
+        required: true
+      - name: "tm_id"
+        description: "test module id"
+        in: "path"
+        type: "integer"
+        required: true
+      - name: "tc_id"
+        description: "test case id"
+        in: "path"
+        type: "integer"
+        required: true
+      - name: "requirement info"
+        in: "body"
+        description: "Requirement ID in JSON"
+        required: true
+        schema:
+          type: "object"
+          properties:
+            requirement_id:
+              type: "integer"
+      responses:
+        200:
+          schema:
+            type: "object"
+            properties:
+              message:
+                type: "string"
+              object:
+                type: "array"
+                items:
+                  $ref: "#/definitions/Requirement_full"
+          description: "Operation successful. Returns test case current requirements in JSON response."
+        400:
+          description: "Invalid body."
+        404:
+          description: "Project, test plan, test module, test case or its requirements not found."
+        415:
+          description: "Unsupported media type."
+        500:
+          description: "Operation failed."
+
+definitions:
+  Role:
+    type: "object"
+    required:
+    - id
+    - name
+    properties:
+      id:
+        type: "integer"
+      name:
+        type: "string"
+
+  User:
+    type: "object"
+    required:
+    - id
+    - name
+    - roles
+    properties:
+      id:
+        type: "integer"
+      username:
+        type: "string"
+      name:
+        type: "string"
+      surname:
+        type: "string"
+      roles:
+        type: "array"
+        items:
+          $ref: "#/definitions/Role"
+      assigned_projects:
+        type: "array"
+        items:
+          type: "integer"
+
+  Project:
+    type: "object"
+    required:
+    - id
+    - name
+    - repo_url
+    - language_processor
+    - ci_communicator
+    - ci_params
+    properties:
+      id:
+        type: "integer"
+      name:
+        type: "string"
+      repo_url:
+        type: "string"
+      language_processor:
+        type: "string"
+      ci_communicator:
+        type: "string"
+      ci_params:
+        type: "object"
+        description: "required for Gitlab CI integration"
+        required:
+        - key
+        properties:
+          key:
+            type: "string"
+          proj_path:
+            type: "string"
+          server_base:
+            type: "string"
+          server_url:
+            type: "string"
+      issue_tracker:
+        type: "string"
+      issue_tracker_params:
+        type: "object"
+        description: "required for JIRA integration"
+        required:
+        - server
+        - username
+        - password
+        - project_shortcut
+        properties:
+          server:
+            type: "string"
+          username:
+            type: "string"
+          password:
+            type: "string"
+          project_shortcut:
+            type: "string"
+
+  StepGherkinType:
+    type: "object"
+    required:
+    - id
+    - name
+    properties:
+      id:
+        type: "integer"
+      name:
+        enum: ["Given", "When", "Then"]
+        description: "Default basic Gherkin types."
+        type: "string"
+
+  TestStepDefinition:
+    type: "object"
+    required:
+    - id
+    - content
+    - project
+    - gherkin_type
+    properties:
+      id:
+        type: "integer"
+      content:
+        type: "string"
+      gherkin_type:
+        type: "string"
+        description: "expected name of step gherkin type"
+      param_count:
+        type: "integer"
+      project:
+        type: "object"
+        properties:
+          id:
+            type: "integer"
+          name:
+            type: "string"
+
+  TestStep:
+    type: "object"
+    required:
+    - id
+    - content
+    - order
+    - test_step_definition
+    properties:
+      id:
+        type: "integer"
+      content:
+        type: "string"
+      order:
+        type: "integer"
+      test_step_definition:
+        $ref: "#/definitions/TestStepDefinition"
+
+  TestCase:
+    type: "object"
+    required:
+    - id
+    - name
+    properties:
+      id:
+        type: "integer"
+      name:
+        type: "string"
+      priority:
+        enum: ["high", "medium", "low"]
+        description: "Default priority types, connected to Test Case."
+        type: "string"
+      scenario_name:
+        type: "string"
+        description: "also 'scenario_no_spaces' is used for filenames based on test case"
+      steps:
+        type: "array"
+        items:
+          $ref: "#/definitions/TestStep"
+
+  TestModule:
+    type: "object"
+    required:
+    - id
+    - name
+    - name_no_spaces
+    properties:
+      id:
+        type: "integer"
+      name:
+        type: "string"
+      name_no_spaces:
+        description: "for file names based on module"
+        type: "string"
+      testcases:
+        type: "array"
+        items:
+          $ref: "#/definitions/TestCase"
+
+  TestPlan:
+    type: "object"
+    required:
+    - id
+    - project
+    properties:
+      id:
+        type: "integer"
+      name:
+        type: "string"
+      description:
+        type: "string"
+      project:
+        type: "object"
+        properties:
+          id:
+            type: "integer"
+          name:
+            type: "string"
+      testmodules:
+        type: "array"
+        items:
+          $ref: "#/definitions/TestModule"
+
+  Bug_full:
+    type: "object"
+    required:
+    - id
+    - pipeline_id
+    - trigger_type
+    properties:
+      id:
+        type: "integer"
+      link:
+        type: "integer"
+      status:
+        type: "string"
+      data:
+        type: "string"
+      ci_runs_affected:
+        type: "array"
+        items:
+          $ref: "#/definitions/CIRun_full"
+
+  Bug_base:
+    type: "object"
+    required:
+    - id
+    properties:
+      id:
+        type: "integer"
+      link:
+        type: "integer"
+      status:
+        type: "string"
+      data:
+        type: "string"
+      ci_runs_affected:
+        type: "array"
+        items:
+          type: "integer"
+
+  CIRun_full:
+    type: "object"
+    required:
+    - id
+    - pipeline_id
+    - trigger_type
+    properties:
+      id:
+        type: "integer"
+      pipeline_id:
+        type: "integer"
+      data:
+        description: "JSON in string pipeline_id, commit_hash, status"
+        type: "string"
+      trigger_type:
+        type: "string"
+      bugs:
+        type: "array"
+        items:
+          $ref: "#/definitions/Bug_full"
+
+  CIRun_base:
+    type: "object"
+    required:
+    - id
+    - pipeline_id
+    - trigger_type
+    properties:
+      id:
+        type: "integer"
+      pipeline_id:
+        type: "integer"
+      data:
+        description: "JSON in string pipeline_id, commit_hash, status"
+        type: "string"
+      trigger_type:
+        type: "string"
+      bugs:
+        type: "array"
+        items:
+          type: "integer"
+
+  Report:
+    type: "object"
+    required:
+    - id
+    - ci_run
+    properties:
+      id:
+        type: "integer"
+      ci_run:
+        type: "object"
+        properties:
+          id:
+            type: "integer"
+          pipeline_id:
+            type: "integer"
+          overall_result:
+            type: "string"
+      report_data:
+        description: "JSON in string with 'result', 'test_cases'"
+        type: "string"
+  Tag:
+    type: "object"
+    required:
+    - id
+    - project_id
+    properties:
+      id:
+        type: "integer"
+      content:
+        type: "string"
+      category:
+        type: "string"
+      project_id:
+        type: "string"
+  Requirement_base:
+    type: "object"
+    required:
+    - id
+    - project_id
+    properties:
+      id:
+        type: "integer"
+      content:
+        type: "string"
+      project_id:
+        type: "string"
+      tags:
+        type: "array"
+        items:
+          $ref: "#/definitions/Tag"
+      project:
+        type: "object"
+        properties:
+          id:
+            type: "integer"
+          name:
+            type: "string"
+      in_testcases:
+        type: "array"
+        items:
+          type: "integer"
+
+  Requirement_full:
+    type: "object"
+    required:
+    - id
+    - project_id
+    properties:
+      id:
+        type: "integer"
+      content:
+        type: "string"
+      project_id:
+        type: "string"
+      tags:
+        type: "array"
+        items:
+          $ref: "#/definitions/Tag"
+      project:
+        type: "object"
+        properties:
+          id:
+            type: "integer"
+          name:
+            type: "string"
+      in_testcases:
+        type: "array"
+        items:
+          $ref: "#/definitions/TestCase"

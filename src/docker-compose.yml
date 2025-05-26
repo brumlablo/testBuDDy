@@ -1,0 +1,44 @@
+version: '2'
+services:
+ backend:
+   container_name: backend
+   image: backend
+   command: /wait-for-it.sh dbs:1234 -s -- python3 -u /app/run.py
+   env_file:
+     - ./backend/.env
+   restart: always
+   build: ./backend/
+   ports:
+    - "5000:5000"
+   volumes:
+    - ./backend:/app
+   depends_on:
+     - dbs
+   links:
+     - dbs
+ dbs:
+   container_name: dbs
+   image: mysql:8.0
+   command:  --default-authentication-plugin=mysql_native_password --init-file /data/application/init_dbs.sql
+   ports:
+     - "33066:1234"
+   restart: always
+   volumes:
+     - ./dbs/init_dbs.sql:/data/application/init_dbs.sql
+     - ./database:/var/lib/mysql
+   environment:
+     MYSQL_ROOT_PASSWORD: admin
+     MYSQL_DATABASE: testbuddy
+     MYSQL_ROOT_HOST: '%'
+     MYSQL_TCP_PORT: 1234
+   expose:
+     - '1234'
+ unittest:
+   container_name: unittest
+   image: backend
+   command: /wait-for-it.sh backend:5000 -s -- python3 -u /app/tests.py
+   build: ./backend/
+   depends_on:
+     - backend
+   links:
+     - backend

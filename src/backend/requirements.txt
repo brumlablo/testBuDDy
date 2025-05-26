@@ -1,0 +1,16 @@
+Flask
+flask-sqlalchemy
+SQLAlchemy
+mysql-connector
+configparser
+mysqlclient
+aiomysql
+sqlalchemy-utils
+sqlacodegen
+flask-login
+gitpython
+requests
+python-gitlab
+jira
+flask_cors
+swagger-ui-py
